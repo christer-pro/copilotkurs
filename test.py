@@ -6,5 +6,5 @@ print(" Hello, World! ")
 print(" This is a test file. ") 
 
 print(" åäöÅÄÖ  ")
-      
-      
+
+print(" Testing special characters: ñ, ü, é ")
