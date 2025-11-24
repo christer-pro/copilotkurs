@@ -1,0 +1,6 @@
+Hej världen!
+Detta är min första fil i Python
+åäöÅÄÖ
+
+
+
