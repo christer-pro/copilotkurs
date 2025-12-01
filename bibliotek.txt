@@ -1,1 +1,4 @@
-Detta är mitt nya bibliotek
+Titel: 1984, Författare: George Orwell, År: 1949, Pris: 159.9
+Titel: To Kill a Mockingbird, Författare: Harper Lee, År: 1960, Pris: 129.5
+Titel: Brave New World, Författare: Aldous Huxley, År: 1932, Pris: 149.0
+Titel: The Great Gatsby, Författare: F. Scott Fitzgerald, År: 1925, Pris: 139.75

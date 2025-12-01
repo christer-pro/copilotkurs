@@ -8,6 +8,11 @@ class Bok:
     def info(self):
         return(f"Titel: {self.titel}, Författare: {self.författare}, År: {self.år}, Pris: {self.pris}")
     
+    def __eq__(self, other):
+        if not isinstance(other, Bok):
+            return NotImplemented
+        return (self.titel, self.författare, self.år, self.pris) == (other.titel, other.författare, other.år, other.pris)
+    
 bok1=Bok("1984", "George Orwell", 1949, 159.90)
 bok2=Bok("To Kill a Mockingbird", "Harper Lee", 1960, 129.50)
 print(f"{bok1.info()}\n{bok2.info()}")
@@ -21,6 +26,13 @@ bibliotek.append(Bok("Intr to Python","John Guttag",2021,150))
 print(" Böcker i biblioteket")
 for bok in bibliotek:
     print(bok.info())
+
+print("Ta bort en bok")
+
+bibliotek.remove(Bok("Intr to Python","John Guttag",2021,150))
+for bok in bibliotek:
+    print(bok.info())
+    
 try:
     find_titel=input("Vilken bok vill du söka efter ? ")
     hittad=False
@@ -36,3 +48,9 @@ except Exception as e:
 
 with open("bibliotek.txt", "w", encoding="utf-8") as fil: 
     fil.write("Detta är mitt nya bibliotek")
+print("Detta är mitt nya bibliotek")
+
+with open("bibliotek.txt", "w", encoding="utf-8") as fil:
+    for bok in bibliotek:
+        fil.write(bok.info() + "\n")
+print("Biblioteket har sparats till bibliotek.txt")
