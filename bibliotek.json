@@ -1,0 +1,38 @@
+[
+  {
+    "titel": "1984",
+    "författare": "George Orwell",
+    "år": 1949,
+    "pris": 159.9
+  },
+  {
+    "titel": "To Kill a Mockingbird",
+    "författare": "Harper Lee",
+    "år": 1960,
+    "pris": 129.5
+  },
+  {
+    "titel": "Brave New World",
+    "författare": "Aldous Huxley",
+    "år": 1932,
+    "pris": 149.0
+  },
+  {
+    "titel": "The Great Gatsby",
+    "författare": "F. Scott Fitzgerald",
+    "år": 1925,
+    "pris": 139.75
+  },
+  {
+    "titel": "Pippi Langstrump",
+    "författare": "Astrid Lindgren",
+    "år": 1945,
+    "pris": 199.0
+  },
+  {
+    "titel": "Heja Pippi",
+    "författare": "Astrid Lindgren",
+    "år": 2015,
+    "pris": 115.0
+  }
+]

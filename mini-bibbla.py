@@ -11,13 +11,8 @@ class Bok:
     def info(self):
         return f"Titel: {self.titel}, Författare: {self.författare}, År: {self.år}, Pris: {self.pris:.2f} kr"
 
-    def __eq__(self, other):
-        if not isinstance(other, Bok):
-            return NotImplemented
-        return (self.titel, self.författare, self.år, self.pris) == (
-            other.titel, other.författare, other.år, other.pris
-        )
 
+# --- Funktioner för biblioteket ---
 
 def lista_böcker(bibliotek):
     if not bibliotek:
@@ -35,7 +30,7 @@ def lägg_till_bok(bibliotek):
         år = int(input("År (t.ex. 1949): ").strip())
         pris = float(input("Pris (t.ex. 159.90): ").strip())
     except ValueError:
-        print("❌ Ogiltigt år eller pris. Försök igen med siffror.")
+        print("❌ Ogiltigt år eller pris. Försök igen.")
         return
     ny_bok = Bok(titel, författare, år, pris)
     bibliotek.append(ny_bok)
@@ -44,7 +39,6 @@ def lägg_till_bok(bibliotek):
 
 def ta_bort_bok(bibliotek):
     titel = input("Vilken titel vill du ta bort? ").strip()
-    # Ta bort första matchande bok med den titeln (skonsamt för tusentals böcker)
     for i, bok in enumerate(bibliotek):
         if bok.titel.lower() == titel.lower():
             print("🗑️ Tar bort:", bok.info())
@@ -63,38 +57,61 @@ def sök_bok(bibliotek):
         print("❌ Boken finns inte i biblioteket.")
 
 
+# --- Sorteringsfunktioner ---
+
+def sortera_efter_år(bibliotek):
+    sorterat = sorted(bibliotek, key=lambda bok: bok.år)
+    print("📚 Böcker sorterade efter år:")
+    for bok in sorterat:
+        print("-", bok.info())
+
+
+def sortera_efter_pris(bibliotek, stigande=True):
+    sorterat = sorted(bibliotek, key=lambda bok: bok.pris, reverse=not stigande)
+    print("📚 Böcker sorterade efter pris:")
+    for bok in sorterat:
+        print("-", bok.info())
+
+
+def sortera_efter_år(bibliotek, stigande=True):
+    sorterat = sorted(bibliotek, key=lambda bok: bok.år, reverse=not stigande)
+    print("📚 Böcker sorterade efter år:")
+    for bok in sorterat:
+        print("-", bok.info())
+
+
+# --- Spara/Läsa JSON ---
+
 def spara_json(bibliotek, filnamn="bibliotek.json"):
-    try:
-        with open(filnamn, "w", encoding="utf-8") as f:
-            # __dict__ ger ett uppslagsverk (dict) av objektets fält
-            data = [bok.__dict__ for bok in bibliotek]
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"💾 Sparat {len(bibliotek)} böcker till {filnamn}.")
-    except Exception as e:
-        print("❌ Kunde inte spara:", e)
+    with open(filnamn, "w", encoding="utf-8") as f:
+        json.dump([bok.__dict__ for bok in bibliotek], f, ensure_ascii=False, indent=2)
+    print(f"💾 Sparat {len(bibliotek)} böcker till {filnamn}.")
 
 
 def läs_json(filnamn="bibliotek.json"):
-    if not os.path.exists(filnamn):
-        print("ℹ️ Ingen fil hittades. Startar med tomt bibliotek.")
-        return []
     try:
         with open(filnamn, "r", encoding="utf-8") as f:
             data = json.load(f)
-        bibliotek = []
-        for item in data:
-            # Säker konvertering av typer
-            titel = item.get("titel", "")
-            författare = item.get("författare", "")
-            år = int(item.get("år", 0))
-            pris = float(item.get("pris", 0.0))
-            bibliotek.append(Bok(titel, författare, år, pris))
-        print(f"📥 Läste in {len(bibliotek)} böcker från {filnamn}.")
+        bibliotek = [Bok(**bok) for bok in data]
+
+        # Bekräfta antalet böcker
+        print(f"✅ Läste in {len(bibliotek)} böcker från {filnamn}")
+
+        # Lista böckerna snyggt
+        for bok in bibliotek:
+            print("-", bok.info())
+
         return bibliotek
-    except Exception as e:
-        print("❌ Kunde inte läsa filen:", e)
+
+    except FileNotFoundError:
+        print(f"❌ Filen {filnamn} hittades inte.")
+        return []
+    except json.JSONDecodeError:
+        print(f"❌ Filen {filnamn} innehåller ogiltig JSON.")
         return []
 
+
+# --- Meny ---
 
 def huvudmeny():
     print("\n--- Bibliotekssystem ---")
@@ -102,13 +119,15 @@ def huvudmeny():
     print("2. Lägg till bok")
     print("3. Ta bort bok")
     print("4. Sök bok")
-    print("5. Spara till JSON")
-    print("6. Läs från JSON")
-    print("7. Avsluta")
+    print("5. Sortera efter år")
+    print("6. Sortera efter pris")
+    print("7. Sortera efter titel")
+    print("8. Spara till JSON")
+    print("9. Läs från JSON")
+    print("10. Avsluta")
 
 
 def starta_program():
-    # Startdata (valfritt)
     bibliotek = [
         Bok("1984", "George Orwell", 1949, 159.90),
         Bok("To Kill a Mockingbird", "Harper Lee", 1960, 129.50),
@@ -118,7 +137,7 @@ def starta_program():
 
     while True:
         huvudmeny()
-        val = input("Välj (1-7): ").strip()
+        val = input("Välj (1-10): ").strip()
         if val == "1":
             lista_böcker(bibliotek)
         elif val == "2":
@@ -128,10 +147,18 @@ def starta_program():
         elif val == "4":
             sök_bok(bibliotek)
         elif val == "5":
-            spara_json(bibliotek)
+            ordning = input("Stigande (s) eller fallande (f)? ").lower()
+            sortera_efter_år(bibliotek, stigande=(ordning == "s"))
         elif val == "6":
-            bibliotek = läs_json()
+            ordning = input("Stigande (s) eller fallande (f)? ").lower()
+            sortera_efter_pris(bibliotek, stigande=(ordning == "s"))
         elif val == "7":
+            sortera_efter_titel(bibliotek)
+        elif val == "8":
+            spara_json(bibliotek)
+        elif val == "9":
+            bibliotek = läs_json()
+        elif val == "10":
             print("👋 Avslutar. Tack för idag!")
             break
         else:
